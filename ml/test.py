@@ -9,7 +9,7 @@ if __name__ == '__main__':
     model = 3
 
     start_time = time.time()
-    speech_text = speech_recognition(video_path="video.mp4", model=models[model])
+    speech_text = speech_recognition(video_path="00efa58930724f2ae6f9916f53cda3b3.mp4", model=models[model])
     elapsed_recognition_time = time.time() - start_time
     print(f"Время выполнения распознавания речи : {elapsed_recognition_time:.2f} секунд")
 
