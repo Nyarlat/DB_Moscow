@@ -1,10 +1,13 @@
 import cv2
 import os
 from PIL import Image
+from googletrans import Translator
 from transformers import BlipProcessor, BlipForConditionalGeneration
 
 processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
 model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base").to("cuda")
+
+traslator = Translator()
 
 
 def extract_frames(video_path, frames_to_extract=10):
@@ -62,6 +65,9 @@ def get_text_from_video(video_path):
         cv2.imwrite(frame_path, frame)
         text += get_text_from_frame(frame_path) + ". "
         os.remove(frame_path)
+
+    print(text)
+    text = traslator.translate(text=text, src="en", dest="ru")
 
     return text
 
