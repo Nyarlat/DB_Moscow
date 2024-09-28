@@ -58,13 +58,7 @@ threshold = 0.1
 
 for i, row in data.iterrows():
     scores, predictions = index.search(np.array([row['title_vector']]), topn)
-
-    normalized_scores = scores[0] / max(scores[0]) if max(scores[0]) > 0 else scores[0]
-
-    filtered_tags = [tags_list[predictions[0][j]] for j in range(len(normalized_scores)) if
-                     normalized_scores[j] <= threshold]
-
     index_i = sample_submission[sample_submission.video_id == row.video_id].index
-    sample_submission.at[index_i[0], 'predicted_tags'] = filtered_tags if filtered_tags else [None]
+    sample_submission.at[index_i[0], 'predicted_tags'] = [tags_list[predictions[0][0]]]
 
 sample_submission.to_csv("sample_submission.csv", index_label=0)
