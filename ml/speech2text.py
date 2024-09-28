@@ -1,14 +1,17 @@
 import whisper
 import os
-from moviepy.editor import VideoFileClip, AudioFileClip
+import ffmpeg
 
 
 def extract_audio_from_video(video_path, audio_path):
     """Extract audio from a video file and save it to a specified path."""
     try:
-        with VideoFileClip(video_path) as video:
-            audio = video.audio
-            audio.write_audiofile(audio_path, fps=16000, nbytes=2, codec='pcm_s16le', bitrate="16k")
+        (
+            ffmpeg
+            .input(video_path)
+            .output(audio_path, format='wav', ac=1, ar='16000')
+            .run(overwrite_output=True)
+        )
     except Exception as e:
         print(f"Error extracting audio: {e}")
 
@@ -16,10 +19,14 @@ def extract_audio_from_video(video_path, audio_path):
 def trim_audio(audio_path, max_duration=600):
     """Trim the audio file to a maximum duration."""
     try:
-        with AudioFileClip(audio_path) as audio:
-            if audio.duration > max_duration:
-                trimmed_audio = audio.subclip(0, max_duration)
-                trimmed_audio.write_audiofile(audio_path, fps=16000, nbytes=2, codec='pcm_s16le', bitrate="16k")
+        trimmed_audio_path = "trimmed_" + audio_path  # Create a new file for trimmed audio
+        (
+            ffmpeg
+            .input(audio_path, ss=0, t=max_duration)
+            .output(trimmed_audio_path)
+            .run(overwrite_output=True)
+        )
+        os.replace(trimmed_audio_path, audio_path)  # Replace original with trimmed audio
     except Exception as e:
         print(f"Error trimming audio: {e}")
 
@@ -38,7 +45,6 @@ def speech_recognition(video_path, model='base'):
     # Transcribe the trimmed audio
     try:
         result = speech_model.transcribe(audio_path, language='ru')
-        print(result)
         return result['text']
     except Exception as e:
         print(f"Error during transcription: {e}")

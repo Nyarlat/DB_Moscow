@@ -19,18 +19,27 @@ def create_train_data(df_path, video_folder):
     for chunk in pd.read_csv(df_path, chunksize=100):
         # Функция для обработки видео
         def process_video(video_name):
-            nonlocal processed_count  # Позволяет изменять переменную из внешней области видимости
+            nonlocal processed_count
+
             video_path = f"{video_folder}/{video_name}.mp4"
             if os.path.exists(video_path):
+                speech_text = ""
+                video_text = ""
                 try:
                     speech_text = speech_recognition(video_path)
-                    video_text = get_text_from_video(video_path)
-                    processed_count += 1  # Увеличиваем счетчик при успешной обработке
-                    print(f"Обработано файлов: {processed_count} из {total}")
-                    return speech_text, video_text
                 except Exception as e:
-                    print(f"Ошибка при обработке {video_path}: {e}")
-                    return "", ""  # Возвращаем пустые строки в случае ошибки
+                    print(f"Ошибка при обработке речи в {video_path}: {e}")
+
+                try:
+                    video_text = get_text_from_video(video_path)
+                except Exception as e:
+                    print(f"Ошибка при обработке кадров в {video_path}: {e}")
+
+                processed_count += 1
+                print(f"Обработано файлов: {processed_count} из {total}")
+
+                return speech_text, video_text
+
             else:
                 print(f"Файл {video_path} не найден. Пропускаем.")
                 return "", ""
@@ -40,6 +49,10 @@ def create_train_data(df_path, video_folder):
 
         # Сохранение обновленного чанка в CSV файл
         chunk.to_csv(output_file, mode='a', header=not os.path.exists(output_file), index=False)
+
+
+def get_categories_mock():
+    return ['Машиностроение', 'Государственные закупки', 'Информационно-развлекательные технологии']
 
 
 if __name__ == "__main__":

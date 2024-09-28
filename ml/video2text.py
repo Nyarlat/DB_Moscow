@@ -1,13 +1,11 @@
 import cv2
 import os
 from PIL import Image
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 from transformers import BlipProcessor, BlipForConditionalGeneration
 
 processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
 model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base").to("cuda")
-
-traslator = Translator()
 
 
 def calculate_histogram(frame):
@@ -23,7 +21,6 @@ def extract_frames(video_path, frames_to_extract=10, similarity_threshold=0.9):
 
     # Получаем общее количество кадров и частоту кадров
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    print(f"Общее количество кадров: {total_frames}")
 
     # Извлекаем все кадры и их гистограммы
     all_frames = []
@@ -58,8 +55,6 @@ def extract_frames(video_path, frames_to_extract=10, similarity_threshold=0.9):
             unique_frames.append(all_frames[i])
             unique_histograms.append(current_hist)
 
-    print(f"Уникальные кадры: {len(unique_frames)}")
-
     # если кадров меньше 10 то берем их
     if len(unique_frames) < 10:
         return unique_frames
@@ -68,12 +63,10 @@ def extract_frames(video_path, frames_to_extract=10, similarity_threshold=0.9):
     interval = len(unique_frames) // frames_to_extract
     extracted_frames = [unique_frames[i] for i in range(0, len(unique_frames), interval)][:frames_to_extract]
 
-    print(f"Извлечено уникальных кадров: {len(extracted_frames)}")
-    print(extracted_frames)
     return extracted_frames
 
 
-def get_text_from_frame(frame_path, cond_text="a frame of"):
+def get_text_from_frame(frame_path, cond_text="a video frame of"):
     raw_image = Image.open(frame_path).convert('RGB')
 
     inputs = processor(raw_image, cond_text, return_tensors="pt").to("cuda")
@@ -93,13 +86,11 @@ def get_text_from_video(video_path):
         text += get_text_from_frame(frame_path) + ". "
         os.remove(frame_path)
 
-    print(text)
-    text = traslator.translate(text=text, src="en", dest="ru")
+    text = GoogleTranslator(source='en', target='ru').translate(text)
 
     return text
 
 
 if __name__ == "__main__":
-    #print(get_text_from_video('00efa58930724f2ae6f9916f53cda3b3.mp4'))
-    extract_frames("35test_vid.mp4")
+    print(get_text_from_video('92f09d5f55fc50dd70d741f8c1aec93c.mp4'))
 
