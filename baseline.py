@@ -54,7 +54,7 @@ sample_submission['predicted_tags']=np.nan
 sample_submission['predicted_tags'] = sample_submission['predicted_tags'].astype('object')
 
 
-threshold = 0.95
+threshold = 0.1
 
 for i, row in data.iterrows():
     scores, predictions = index.search(np.array([row['title_vector']]), topn)
@@ -62,7 +62,7 @@ for i, row in data.iterrows():
     normalized_scores = scores[0] / max(scores[0]) if max(scores[0]) > 0 else scores[0]
 
     filtered_tags = [tags_list[predictions[0][j]] for j in range(len(normalized_scores)) if
-                     normalized_scores[j] >= threshold]
+                     normalized_scores[j] <= threshold]
 
     index_i = sample_submission[sample_submission.video_id == row.video_id].index
     sample_submission.at[index_i[0], 'predicted_tags'] = filtered_tags if filtered_tags else [None]
