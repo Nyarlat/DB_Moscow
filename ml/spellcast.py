@@ -14,6 +14,8 @@ spell_model.to(device)
 
 
 def spell_text(input_sequences):
+    if not isinstance(input_sequences, str):
+        return ""
     task_prefix = "Spell correct: "
     if type(input_sequences) != list: input_sequences = [input_sequences]
     encoded = spell_tokenizer(
