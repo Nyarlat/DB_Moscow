@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moscow2024</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <header>
+        <div class="header__container">
+            <h1><a class="header__a" href="">Tagging</a></h1>
+        </div>
+    </header>
+    <main>
+        <div class="container" id="container">
+            <div class="block block_file">
+                <h2 class="block__h">Выбор файла</h1>
+                <div class="main__entry__label">
+                    Загрузите видео для генерации тэгов:
+                </div>
+                <label for="fileInput" class="fileInputLabel">
+                    <div class="filetext" id="filetext">Выберите файл...</div>
+                    <div class="filebutton">Загрузить</div>
+                </label>
+                <input type="file" accept="video/*" id="fileInput" class="fileInput" onchange="handleFileChange(event)">
+                <div id="fileNameDisplay" class="fileNameDisplay"></div>
+                <div id="status"></div>
+            </div>
+
+            <div id="info_container">
+
+            </div>
+
+            <div id="result_container">
+                <!-- <div class="result_2text">
+                    <div class="result_2text__column">
+                        <h2>Распознанная речь</h3>
+                        <div class="result_2text__text">
+
+                        </div>
+                    </div>
+                    <div class="result_2text__column">
+                        <h2>Распознанный видеоряд</h3>
+                        <div class="result_2text__text">
+
+                        </div>
+                    </div>
+                </div> -->
+
+                <!-- <div class="block_result" id="block_result">
+                    <h2>Подходящие тэги</h2>
+                    <div class="block_result__container">
+                        <div class="block_result__header">
+                            <h3 class="block_result__h3">Категория</h3>
+                            <h3 class="block_result__h3">Вероятность</h3>
+                        </div>
+                        <div class="block_result__separator"></div>
+                        <div class="block_result__list">
+                            <div class="block_result__list_item">
+                                <div>
+                                    Бизнес и финансы,Промышленность и сфера услуг,Технологии
+                                </div>
+                                <div>
+                                    96.5%
+                                </div>
+                            </div>
+                            <div class="block_result__list_item">
+                                <div>
+                                    Бизнес и финансы,Промышленность и сфера услуг                                </div>
+                                <div>
+                                    85.4%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </main>
+    <footer>
+        Это база
+    </footer>
+
+    <script>
+        function autoResize() {
+            const textarea = document.getElementById('description');
+            textarea.style.height = 'auto'; 
+            textarea.style.height = textarea.scrollHeight + 'px'; 
+        }
+    </script>
+
+    <script src="static/js/videosend.js"></script>
+</body>
+</html>
