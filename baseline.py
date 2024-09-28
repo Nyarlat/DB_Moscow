@@ -6,7 +6,7 @@ import numpy as np
 import faiss
 
 
-data = pd.read_csv("train_data_categories.csv")[['video_id', 'title']]
+data = pd.read_csv("train_data_categories.csv")[['video_id', 'title', 'description']]
 taxonomy = pd.read_csv("IAB_tags.csv")
 
 print(data.columns)
@@ -19,9 +19,8 @@ model = SentenceTransformer('DeepPavlov/rubert-base-cased-sentence', )
 dim = 768 # размер вектора эмбеддинга
 
 
-# вместо column1 и column2 можно добавить столбцы
-#data['title_vector'] = data.apply(lambda row: model.encode(f"{row['title']} {row['column1']} {row['column2']}", convert_to_tensor=True).cpu().numpy(),axis=1)
-data['title_vector'] = data['title'].apply(lambda l: model.encode(l, convert_to_tensor=True).cpu().numpy())
+# СЮДА ДОБАВЛЯТЬ СТОЛБЦЫ
+data['title_vector'] = data.apply(lambda row: model.encode(f"{row['title']} {row['description']}", convert_to_tensor=True).cpu().numpy(),axis=1)
 
 
 def get_tags():
@@ -61,7 +60,6 @@ for i, row in data.iterrows():
     scores, predictions = index.search(np.array([row['title_vector']]), topn)
 
     normalized_scores = scores[0] / max(scores[0]) if max(scores[0]) > 0 else scores[0]
-    print(normalized_scores)
 
     filtered_tags = [tags_list[predictions[0][j]] for j in range(len(normalized_scores)) if
                      normalized_scores[j] >= threshold]
