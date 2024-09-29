@@ -6,6 +6,7 @@ import ffmpeg
 def extract_audio_from_video(video_path, audio_path):
     """
     Извлекает аудио из видеофайла
+
     :param video_path: Путь к видеофайлу
     :param audio_path: Путь, куда будет сохранен аудиофайл
     """

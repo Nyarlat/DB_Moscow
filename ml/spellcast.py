@@ -24,16 +24,15 @@ def spell_text(input_sequences):
     # Префикс задачи, который нужен для корректного использования модели T5
     task_prefix = "Spell correct: "
 
-    # Если input_sequences — не список, преобразуем его в список
     if type(input_sequences) != list:
         input_sequences = [input_sequences]
 
     # Токенизируем входные данные с добавлением префикса задачи
     encoded = spell_tokenizer(
-        [task_prefix + sequence for sequence in input_sequences],  # Добавляем префикс задачи к каждому предложению
-        padding="longest",  # Добавляем паддинг к самому длинному предложению для выравнивания длины входных данных
-        max_length=MAX_INPUT,  # Ограничиваем максимальную длину входных данных
-        truncation=True,  # Обрезаем предложения, превышающие max_length
+        [task_prefix + sequence for sequence in input_sequences],
+        padding="longest",
+        max_length=MAX_INPUT,
+        truncation=True,
         return_tensors="pt",  # Возвращаем данные в формате тензоров PyTorch
     )
 
@@ -45,5 +44,4 @@ def spell_text(input_sequences):
     # Декодируем результат из тензоров обратно в текст
     new_text = spell_tokenizer.batch_decode(predicts, skip_special_tokens=True)
 
-    # Объединяем список предложений в одну строку и возвращаем результат
     return " ".join(new_text)

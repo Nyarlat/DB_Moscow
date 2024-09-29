@@ -10,7 +10,6 @@ download('stopwords')
 class TextPreprocessor:
     """
     Класс для предобработки текста. Предоставляет возможность удаления стоп-слов и лемматизации текста.
-
     :param remove_stopwords: Флаг для удаления стоп-слов (по умолчанию True)
     :param lemmatization: Флаг для лемматизации слов (по умолчанию False)
     """

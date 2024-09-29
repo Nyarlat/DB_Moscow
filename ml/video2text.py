@@ -83,7 +83,6 @@ def extract_frames(video_path, frames_to_extract=10, similarity_threshold=0.9):
 def get_text_from_frame(frame_path, cond_text="a video frame of"):
     """
     Получает описание для изображения с использованием модели BLIP.
-
     :param frame_path: Путь к изображению
     :param cond_text: Текстовый префикс для модели
     :return: Сгенерированное описание изображения
