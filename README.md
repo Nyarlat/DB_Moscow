@@ -43,6 +43,7 @@
 2. Перейдите на официальный сайт библиотеки https://pytorch.org/
 3. Выполните команду установки как предложено на сайте. Это может выглядить следующим образом:
 - **pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118**
+
 Могут возникнуть проблемы с установкой библиотеки ffmpeg
 Чтобы исправить это:
 1. Загрузите архив https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z
