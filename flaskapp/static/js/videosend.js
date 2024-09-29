@@ -64,15 +64,47 @@ function block_info() {
 function videoSend() {
 
     // Получаем элементы, например, из формы или других источников
-    let text1 = document.querySelector('#videoname').value;          // первая строка текста
-    let text2 = document.querySelector('#description').value;          // вторая строка текста
+    let name = document.querySelector('#videoname').value;          // первая строка текста
+    let desc = document.querySelector('#description').value;          // вторая строка текста
 
     // Создаем объект FormData
     const formData = new FormData();
     formData.append('video', video);  // добавляем видеофайл
-    formData.append('text1', text1);      // добавляем первую строку текста
-    formData.append('text2', text2);      // добавляем вторую строку текста
+    formData.append('name', name);      // добавляем первую строку текста
+    formData.append('desc', desc);      // добавляем вторую строку текста
 
+    document.getElementById("result_container").innerHTML = `
+        <div class="img__container">
+            <img class="img__loading" src="static/img/loading.png" alt="loading">
+        </div>
+
+        <style>
+            .img__container {
+                flex: 1;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 100px;
+            }
+
+            .img__loading {
+                width: 100px;
+                height: 100px;
+                animation: rotate_img 0.5s linear infinite;
+            }
+
+            @keyframes rotate_img {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+                }
+        </style>
+    `;
 
     // Отправляем данные на сервер с помощью fetch
     fetch('/api/video', {
