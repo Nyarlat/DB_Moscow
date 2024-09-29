@@ -1,9 +1,7 @@
 import os
 
 from flaskapp import app
-import pandas as pd
-from flask import render_template, make_response, request, Response, jsonify, json, session, redirect, url_for, send_file
-import functools
+from flask import render_template, make_response, request, Response, jsonify, json
 import json
 from utils import get_tags
 
@@ -13,9 +11,9 @@ from utils import get_tags
 def index():
     return render_template('index.html')
 
+
 @app.route('/api/video', methods=['POST'])
 def post_video():
-
     try:
         # Получаем видеофайл
         video_file = request.files.get('video')
@@ -30,8 +28,7 @@ def post_video():
         name = request.form.get('name')
         desc = request.form.get('desc')
 
-
-
+        # Получаем теги, текст речи, описание видеоряда
         cath, a2t, v2t = get_tags(video_file.filename, name, desc)
 
         os.remove(f"./{video_file.filename}")
@@ -47,6 +44,7 @@ def post_video():
     except Exception as e:
         print("error:", e)
         return str(e), 500
+
 
 def json_response(data, code=200):
     return Response(status=code, mimetype="application/json", response=json.dumps(data))
