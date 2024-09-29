@@ -1,8 +1,16 @@
 import os
 import time
+import torch
 import pandas as pd
 from ml.speech2text import speech_recognition
 from ml.video2text import get_text_from_video
+from ml.classification import KnnPipeline
+from ml.zero_shooter import ZeroShooter
+from ml.const import MODEL_ZERO, HIERARCHY
+from ml.utils import flatten_hierarchy
+
+KNN_MODEL = KnnPipeline("models/tf_idf_knn.joblib")
+ZERO_SHOOTER_MODEL = ZeroShooter(MODEL_ZERO, device=torch.device("cuda"), knn=KNN_MODEL)
 
 
 def create_train_data(df_path, video_folder):
@@ -69,7 +77,10 @@ def get_tags(video_path, video_name, video_desc):
     else:
         print(f"Файл {video_path} не найден. Пропускаем.")
 
-    tags = ['Машиностроение', 'Государственные закупки', 'Информационно-развлекательные технологии']  # mock
+    tags = KNN_MODEL.predict(video_name + " " + video_desc + " " + speech_text + " " + video_text)
+    tags = flatten_hierarchy(ZERO_SHOOTER_MODEL.recursive_classify_knn(tags, HIERARCHY))
+
+    print("TAGS", tags)
     elapsed_time = time.time() - start_time
     print(f"Время выполнения обработки видео {video_path}: {elapsed_time:.2f} секунд")
     return tags, speech_text, video_text

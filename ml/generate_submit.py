@@ -1,14 +1,14 @@
 from utils import flatten_hierarchy
 from const import MODEL_ZERO, HIERARCHY
 from zero_shooter import ZeroShooter
-from classification_models import LogRegPipeline
+from classification import KnnPipeline
 import torch
 import pandas as pd
 import time
 from text_preprocessing import TextPreprocessor
 
-logreg = LogRegPipeline()
-zero_shooter = ZeroShooter(model_name=MODEL_ZERO, device=torch.device("cuda"), logreg=logreg)
+knn = KnnPipeline()
+zero_shooter = ZeroShooter(model_name=MODEL_ZERO, device=torch.device("cuda"), knn=knn)
 preprocessor = TextPreprocessor(lemmatization=True)
 
 df = pd.read_csv("../data/test_data.csv")
@@ -19,9 +19,9 @@ data["description"] = data["description"].apply(lambda x: preprocessor.preproces
 
 start = time.time()
 data["predicted_tags"] = data["description"].apply(
-    lambda x: flatten_hierarchy(zero_shooter.recursive_classify_logreg(text=x,
-                                                                hierarchy=HIERARCHY,
-                                                                threshold=None)))
+    lambda x: flatten_hierarchy(zero_shooter.recursive_classify_knn(text=x,
+                                                                    hierarchy=HIERARCHY,
+                                                                    threshold=None)))
 
 data = data[["video_id", "predicted_tags"]]
 data.to_csv("../data/test_sub_ps_knn_zero_video.csv", sep=",", index=False)

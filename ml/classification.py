@@ -2,16 +2,13 @@ from joblib import dump, load
 from typing import Optional, Union
 import pandas as pd
 import numpy as np
-from text_preprocessing import TextPreprocessor
+from ml.text_preprocessing import TextPreprocessor
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.linear_model import LogisticRegression
-from catboost import CatBoostClassifier
-from sklearn.model_selection import train_test_split
 
 
-class LogRegPipeline:
+class KnnPipeline:
     def __init__(self, filename: str = None):
         if filename:
             print("Load from file...")
@@ -20,16 +17,15 @@ class LogRegPipeline:
             print("Model not found. Start training on dataset")
             self.pipeline = self._train()
             print("Model has been trained. Saving ...")
-            self.save("../models/tf_idf_knn.joblib")
+            self.save("/models/tf_idf_knn.joblib")
 
     def _train(self) -> Pipeline:
-        # ('clf', LogisticRegression(n_jobs=1, C=1e5, max_iter=1000))
         pipeline = Pipeline([
             ('vect', CountVectorizer()),
             ('tfidf', TfidfTransformer()),
             ('clf', KNeighborsClassifier())])
 
-        df = pd.read_csv("../test_data/train_data.csv")
+        df = pd.read_csv("/data/train_data.csv")
         df.dropna(inplace=True)
         df.drop(columns=["video_id"], inplace=True)
 
@@ -43,7 +39,8 @@ class LogRegPipeline:
 
         new_df = df_filtered.copy()
         preprocessor = TextPreprocessor(lemmatization=True)
-        new_df["description"] = (new_df["description"] + new_df["video2text"].astype(str)).apply(lambda x: preprocessor.preprocess(x))
+        new_df["description"] = (new_df["description"] + new_df["video2text"].astype(str)).apply(
+            lambda x: preprocessor.preprocess(x))
 
         pipeline.fit(new_df["description"], new_df["c1"])
         return pipeline
@@ -67,5 +64,3 @@ class LogRegPipeline:
             if tag not in main_categories:
                 main_categories.append(tag)
         return main_categories[0]
-
-
