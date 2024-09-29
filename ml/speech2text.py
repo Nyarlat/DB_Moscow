@@ -4,7 +4,11 @@ import ffmpeg
 
 
 def extract_audio_from_video(video_path, audio_path):
-    """Extract audio from a video file and save it to a specified path."""
+    """
+    Извлекает аудио из видеофайла
+    :param video_path: Путь к видеофайлу
+    :param audio_path: Путь, куда будет сохранен аудиофайл
+    """
     try:
         (
             ffmpeg
@@ -17,7 +21,10 @@ def extract_audio_from_video(video_path, audio_path):
 
 
 def trim_audio(audio_path, max_duration=600):
-    """Trim the audio file to a maximum duration."""
+    """
+    Обрезает аудиофайл до максимальной продолжительности.
+    :param audio_path: Путь к аудиофайлу, который нужно обрезать
+    """
     try:
         trimmed_audio_path = "trimmed_" + audio_path  # Create a new file for trimmed audio
         (
@@ -32,17 +39,21 @@ def trim_audio(audio_path, max_duration=600):
 
 
 def speech_recognition(video_path, model='base'):
-    """Perform speech recognition on the audio extracted from the video."""
+    """
+     Распознавание речи из аудио, извлеченного из видеофайла.
+    :param video_path: Путь к видеофайлу
+    :param model: Whisper для распознавания речи
+    """
     audio_path = "audio.wav"
 
-    # Load the Whisper model
+    # Загрузка модели Whisper для распознавания речи
     speech_model = whisper.load_model(model, device="cuda")
 
-    # Extract and trim audio
+    # Извлекаем и обрезаем аудио
     extract_audio_from_video(video_path, audio_path)
     trim_audio(audio_path)
 
-    # Transcribe the trimmed audio
+    # Выполняем транскрипцию обрезанного аудио
     try:
         result = speech_model.transcribe(audio_path, language='ru')
         return result['text']
@@ -50,10 +61,10 @@ def speech_recognition(video_path, model='base'):
         print(f"Error during transcription: {e}")
         return None
     finally:
-        # Clean up the temporary audio file
+        # Удаляем временный аудиофайл
         if os.path.exists(audio_path):
             os.remove(audio_path)
 
 
 if __name__ == "__main__":
-    print(speech_recognition('9007f33c8347924ffa12f922da2a179d.mp4'))
+    print(speech_recognition('663ac16d23ef52bd261af0a41e6d8f6b.mp4'))
